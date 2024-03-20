@@ -1,0 +1,31 @@
+<%- include('./partials/head') %>
+
+  <div class="container">
+    <%- include('./partials/navbar') %>
+      <div class="d-flex justify-content-center">
+        <h1 class="m-3">book</h1>
+      </div>
+
+      <div class="card mb-3" style="max-width: 100%;">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img src="<%=data.fileCover%>" class="img-fluid rounded-start" alt="...">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h3 class="card-title"><%= data.title %></h3>
+              <br>
+              <p class="card-text"><%= data.description %></p>
+              <br>
+              <p class="card-text"><small class="text-body-secondary">Автор: <%= data.authors %></small></p>
+
+            </div>
+            <a href="/update/<%= data.id %>" class="btn btn-primary">редактировать</a>
+            <a href="/delete/<%= data.id %>" class="btn btn-primary">удалить</a>
+          </div>
+        </div>
+      </div>
+      
+  </div>
+ 
+<%- include('./partials/foot') %> 
