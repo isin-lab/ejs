@@ -39,16 +39,12 @@ class Book {
 		authors = '',
 		title = '',
 		description = '',
-		fileCover = '',
 		id = uuid(),
-		fileBook = ''
 	) {
 		this.authors = authors
 		this.title = title
 		this.description = description
-		this.fileCover = fileCover
 		this.id = id
-		this.fileBook = fileBook
 	}
 }
 
@@ -77,23 +73,13 @@ const getOne = (req, res) => {
 const createPage = (req, res) => {
 	res.render('create', { title: 'create', active: 'create', data: {} })
 }
-// путь до файла не получается прикрепить в fileCover, а так же добавить картинку в папку
-// но путь почему то добавляется в title[0], нон не работает даже через костыли
-// картинки даже с тестовых данных которые я создал выше не отображаются
+
 const create = (req, res) => {
 	const { myBooks } = books
-	const fileCover = "" 
-	if (req.file) {
-		fileCover = req.file.path 
-	}
-
 	const authors = req.body.authors
 	const title = req.body.title
 	const description = req.body.description
-	
-
-
-	const newBook = new Book(authors, title, description, fileCover)
+	const newBook = new Book(authors, title, description)
 	myBooks.push(newBook)
 	console.log(newBook)
 	res.redirect('/all')
@@ -118,7 +104,7 @@ const updatePage = (req, res) => {
 const update = (req, res) => {
 	const { myBooks } = books
 	const { id } = req.params
-	const { authors, title, description, fileCover } = req.body
+	const { authors, title, description } = req.body
 	const idx = myBooks.findIndex(el => el.id === id)
 
 	if (idx === -1) {
@@ -128,38 +114,26 @@ const update = (req, res) => {
 		...myBooks[idx],
 		authors,
 		title,
-		description,
-		fileCover 
+		description
 	}
 	res.redirect(`/book/${id}`)
 }
-// не удаляет или удалят я так и не понял 
-// после срабатывания выдает Cannot GET /delete/174aade7-6701-4b21-a0a3-28864af83670
-// удаляет после перехода на главную
+
 const deleteBook = (req, res) => {
 	const { myBooks } = books
 	const { id } = req.params
 	const idx = myBooks.findIndex(el => el.id === id)
-	if (idx !== -1) {
+
+	if (idx === -1) {
+		res.status(404).send('Книга не найдена')
+		
+	} else {
 		myBooks.splice(idx, 1)
 		res.redirect('/books')
-		console.log("delete ok") //не выводит
-	} else {
-		res.status(404).send('Книга не найдена')
+		res.end()
 	}
 }
-// нет картинок что бы протестировать(
-// const downloadCover = (req, res) => {
-// 	const { myBooks } = books
-// 	const { id } = req.params
-// 	const idx = myBooks.findIndex(el => el.id === id)
-// 	if (idx) {
-// 		// res.sendFile(myBooks[idx])
-// 		res.download(myBooks[idx].fileCover)
-// 	} else {
-// 		res.status(404).send('Книга не найдена')
-// 	}
-// }
+
 
 module.exports = {
 	getMain,
@@ -170,5 +144,4 @@ module.exports = {
 	updatePage,
 	update,
 	deleteBook,
-	// downloadCover,
 }
